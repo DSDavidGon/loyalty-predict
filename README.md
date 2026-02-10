@@ -11,12 +11,12 @@ Atrair novos clientes é significativamente mais caro do que reter os atuais.
 O canal já possui um sistema de pontos, premiando o cliente por participação e presença nas lives.  
 Existe também a área de cursos do canal onde o cliente pontua ao vincular a conta twitch (conta usada para as lives).  
 Ambas as fontes possuem dados brutos de clientes e de transações que serão utilizadas no modelo.  
-Compreender quais perfis apresentam maior chance de recompra permite direcionar campanhas de marketing, benefícios e comunicações personalizadas.
+Compreender quais perfis apresentam maior chance de retorno permite direcionar campanhas de marketing, benefícios e comunicações personalizadas.
 
 ---
 
 ## ❓ Problema de Negócio
-- Quais clientes têm maior probabilidade de se tornarem fiéis após a primeira compra?  
+- Quais clientes têm maior probabilidade de se tornarem fiéis após a primeiro contato?  
 - O que está acontecendo com o engajamento dos clientes?
 - Quais as métricas gerais?
 - Como melhora-las?
@@ -48,10 +48,9 @@ Compreender quais perfis apresentam maior chance de recompra permite direcionar 
 
 ## 🔎 Metodologia
 
-### 1. Limpeza e tratamento de dados
-- Remoção de nulos
-- Ajuste de tipos
-- Tratamento de outliers
+### 1. Métricas Gerais
+- DAU: Daily Active Users
+- MAU: Monthly Active Users
 
 ### 2. Análise Exploratória (EDA)
 - Distribuição de compras

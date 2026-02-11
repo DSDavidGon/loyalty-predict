@@ -7,10 +7,10 @@ A análise combina exploração de dados, engenharia de atributos e modelos de m
 ---
 
 ## 🏢 Contexto do Negócio
-Atrair novos clientes é significativamente mais caro do que reter os atuais.  
-O canal já possui um sistema de pontos, premiando o cliente por participação e presença nas lives.  
+O canal possui um sistema de pontos, premiando o cliente por participação e presença nas lives.  
 Existe também a área de cursos do canal onde o cliente pontua ao vincular a conta twitch (conta usada para as lives).  
-Ambas as fontes possuem dados brutos de clientes e de transações que serão utilizadas no modelo.  
+Os pontos são utilizados para gamificação do usuário ou troca por outras moedas, para aquisição de brindes.
+Ambas as fontes possuem dados brutos de clientes e de transações e consideram apenas usuários da twitch.
 Compreender quais perfis apresentam maior chance de retorno permite direcionar campanhas de marketing, benefícios e comunicações personalizadas.
 
 ---

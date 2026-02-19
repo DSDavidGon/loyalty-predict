@@ -1,7 +1,7 @@
 /*
 Analise do Ciclo
 Curioso - Contas Recém criadas (Até 7 dias)
-Fiel - Fez transações recente (até 7 dias) e a anterior foi em menos de 14 dias
+Fiel - Fez transações nos ultimos 7 dias e a anterior foi em menos de 14 dias
 Turista - Fez transações entre 7 e 14 dias
 Desencantado - Fez transações entre 15 e 28 dias
 Zumbi - Ultima transação a mais de 28 dias

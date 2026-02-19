@@ -1,4 +1,4 @@
-# 🎯 Loyalty Predict – Previsão de Fidelização de Clientes
+# 🎯 Loyalty Predict – Canal TeoMeWhy
 
 ## 📌 Resumo Executivo
 Este projeto tem como objetivo prever quais clientes possuem maior probabilidade de retornar ao canal [TeoMeWhy](twitch.tv/teomewhy).  
@@ -16,7 +16,7 @@ Compreender quais perfis apresentam maior chance de retorno permite direcionar c
 ---
 
 ## ❓ Problema de Negócio
-- Quais clientes têm maior probabilidade de se tornarem fiéis após a primeiro contato?  
+- Quais clientes têm maior probabilidade de se tornarem fiéis?  
 - O que está acontecendo com o engajamento dos clientes?
 - Quais as métricas gerais?
 - Como melhora-las?

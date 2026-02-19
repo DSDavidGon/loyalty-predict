@@ -34,6 +34,7 @@ Compreender quais perfis apresentam maior chance de retorno permite direcionar c
 
 ## 📂 Dataset
 - [TeoMeWhy Loyalty System](https://www.kaggle.com/datasets/teocalvo/teomewhy-loyalty-system/code)
+- (img/loyalty_db.png)
 - [TeoMeWhy Education Platform](kaggle.com/datasets/teocalvo/teomewhy-education-platform)
 
 ---

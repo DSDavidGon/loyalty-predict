@@ -1,4 +1,10 @@
-select *
+select dtRef,
+        descLifeCycle,
+        count(*)
+
 from life_cycle
-group by descLifeCycle, dtRef
-order by dtRef
+
+group by dtRef, descLifeCycle
+order by dtRef, descLifeCycle
+
+

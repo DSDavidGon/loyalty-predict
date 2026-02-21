@@ -3,7 +3,6 @@
 # %%
 import pandas as pd
 import sqlalchemy
-from datetime import datetime, timedelta
 
 # %%
 
@@ -47,8 +46,13 @@ dates = [
 for i in dates:
 
     with engine_analytical.connect() as con:
-        con.execute(sqlalchemy.text(f"DELETE FROM life_cycle WHERE dtRef = date('{i}','-1 day')"))
-
+        try:
+            query_delete = f"DELETE FROM life_cycle WHERE dtRef = date('{i}','-1 day')"
+            print(query_delete)
+            con.execute(sqlalchemy.text(query_delete))
+            con.commit()
+        except Exception as err:
+            print(err)
     query_format = query.format(date=i)
     df = pd.read_sql(query_format,engine_app)
     df.to_sql('life_cycle', engine_analytical, index=False, if_exists='append')

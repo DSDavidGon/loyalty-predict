@@ -27,6 +27,7 @@ df = pd.read_sql(query, engine)
 df.head()
 
 df = df[df['valor']<4000]
+#Justificativa: Outlier detectado é um bug do sistema, que distribuiu pontos de forma incorreta a um unico cliente.
 
 # %%
 
@@ -47,16 +48,16 @@ X = minmax.fit_transform(df[['frequencia','valor']])
 kmean = cluster.KMeans(n_clusters = 5, random_state = 42, max_iter=1000)
 kmean.fit(X)
 
-df['cluster'] = kmean.labels_
+df['cluster_calc'] = kmean.labels_
 
-df.groupby(by='cluster')['IdCliente'].count()
+df.groupby(by='cluster_calc')['idCliente'].count()
 
 # %%
 
 sns.scatterplot(data=df,
                 x='frequencia',
                 y='valor',
-                hue='cluster',
+                hue='cluster_calc',
                 palette='deep')
 
 #Seguimentação escolhida
@@ -67,3 +68,12 @@ plt.vlines(x=4, ymin=0,ymax=750, colors='black')
 plt.vlines(x=10, ymin=0,ymax=3000, colors='black')
 
 plt.grid
+
+# %%
+#Plot da seguimentação
+
+sns.scatterplot(data=df,
+                x='frequencia',
+                y='valor',
+                hue='cluster',
+                palette='deep')

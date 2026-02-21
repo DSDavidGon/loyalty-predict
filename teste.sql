@@ -1,10 +1,12 @@
 select dtRef,
         descLifeCycle,
-        count(*)
+        cluster,
+        count(*) as qtdCliente
 
 from life_cycle
+where descLifeCycle <> 'zumbi'
 
-group by dtRef, descLifeCycle
-order by dtRef, descLifeCycle
+group by dtRef, descLifeCycle, cluster
+order by dtRef, descLifeCycle, cluster
 
 

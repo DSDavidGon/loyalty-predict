@@ -34,6 +34,11 @@ Compreender quais perfis apresentam maior chance de retorno permite direcionar c
 
 ## 📂 Dataset
 - [TeoMeWhy Loyalty System](https://www.kaggle.com/datasets/teocalvo/teomewhy-loyalty-system/code)
+  
+<p align="center">
+  <img src="img/loyalty_db.png" alt="MER" width="800"/>
+</p>
+
 - [TeoMeWhy Education Platform](kaggle.com/datasets/teocalvo/teomewhy-education-platform)
 
 ---
@@ -51,6 +56,7 @@ Compreender quais perfis apresentam maior chance de retorno permite direcionar c
 ### 1. Métricas Gerais
 - DAU: Daily Active Users
 - MAU: Monthly Active Users
+- Life Cycle
 
 ### 2. Análise Exploratória (EDA)
 - Distribuição de compras
@@ -71,6 +77,20 @@ Modelos testados:
 
 ### 5. Avaliação
 Métricas analisadas:
+- DAU
+  - Apresenta alguns problemas nas datas mais antigas, pois o servidor fechava depois das lives, então não se tem registro de transações
+    
+- MAU
+  - Janela de tempo estipulada em 28 dias para se olhar exatamente 4 semanas;
+  - Melhor observação dos picos de atividade;
+  - Atividade concentrada sempre nos meses de lançamento de algum curso.
+    
+- Life Cycle
+  
+<p align="center">
+  <img src="img/life_cycle.png" alt="MER" width="800"/>
+</p>
+
 - Acurácia
 - Precisão
 - Recall

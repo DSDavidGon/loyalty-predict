@@ -78,6 +78,7 @@ tb_atividade as (
             max(dtRecompensa) as dtCriacao
 
         FROM recompensas_usuarios
+        WHERE dtRecompensa < '2026-02-09'
         GROUP BY idUsuario
 
     UNION ALL
@@ -87,6 +88,7 @@ tb_atividade as (
             max(dtCriacao) as dtCriacao
 
         FROM habilidades_usuarios
+        WHERE dtCriacao < '2026-02-09'
         GROUP BY idUsuario
 
     UNION ALL
@@ -96,6 +98,7 @@ tb_atividade as (
             max(dtCriacao) as dtCriacao
 
         FROM cursos_episodios_completos
+        WHERE dtCriacao < '2026-02-09'
         group by idUsuario
 ),
 
@@ -105,12 +108,53 @@ tb_ultima_atv as (
             min(julianday('2026-02-09')-julianday(dtCriacao)) as diasUltAtv
     FROM tb_atividade
     group by idUsuario
+),
+
+--Consulta ajustada a tabela usuarios_tmw para padronizar com db transacoes
+    tb_join as (
+    SELECT  t3.idTMWCliente,
+            t1.qtdCursosCompletos,
+            t1.qtdCursosIncompletos,
+            t1.carreira,
+            t1.coletaDados2024,
+            t1.dataPlatform2025,
+            t1.dsDatabricks2024,
+            t1.dsPontos2024,
+            t1.estatistica2024,
+            t1.estatistica2025,
+            t1.github2024,
+            t1.github2025,
+            t1.go2026,
+            t1.iaCanal2025,
+            t1.lagoMago2024,
+            t1.loyaltyPredict2025,
+            t1.machineLearning2025,
+            t1.matchmakingTramparDeCasa2024,
+            t1.ml2024,
+            t1.mlflow2025,
+            t1.nekt2025,
+            t1.pandas2024,
+            t1.pandas2025,
+            t1.python2024,
+            t1.python2025,
+            t1.speedF1,
+            t1.sql2020,
+            t1.sql2025,
+            t1.streamlit2025,
+            t1.tramparLakehouse2024,
+            t1.tseAnalytics2024,
+            t2.diasUltAtv
+
+    from tb_pct_cursos_pivot as t1
+
+    left join tb_ultima_atv as t2
+    on t1.idUsuario=t2.idUsuario
+
+    inner join usuarios_tmw as t3
+    on t1.idUsuario = t3.idUsuario
 )
 
-SELECT t1.*,
-        t2.diasUltAtv
+SELECT date('2026-02-09','-1 day') as dtRef,
+        *
 
-from tb_pct_cursos_pivot as t1
-
-left join tb_ultima_atv as t2
-on t1.idUsuario=t2.idUsuario
+FROM tb_join

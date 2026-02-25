@@ -3,6 +3,8 @@
 # %%
 import pandas as pd
 import sqlalchemy
+import datetime
+from tqdm import tqdm
 
 # %%
 
@@ -21,27 +23,17 @@ engine_analytical = sqlalchemy.create_engine('sqlite:///../../data/analytics/dat
 
 # %%
 
-dates = [
-    '2024-05-01',
-    '2024-06-01',
-    '2024-07-01',
-    '2024-08-01',
-    '2024-09-01',
-    '2024-10-01',
-    '2024-11-01',
-    '2024-12-01',
-    '2025-01-01',
-    '2025-02-01',
-    '2025-03-01',
-    '2025-04-01',
-    '2025-05-01',
-    '2025-06-01',
-    '2025-07-01',
-    '2025-08-01',
-    '2025-09-01',
-    '2025-10-01',
-    '2025-11-01'
-]
+def date_range(start, stop):
+    dates = []
+    while start <= stop:
+        dates.append(start)
+        dt_start = datetime.datetime.strptime(start,'%Y-%m-%d') + datetime.timedelta(days=1)
+        start = datetime.datetime.strftime(dt_start,'%Y-%m-%d')
+        return dates
+
+dates = date_range('2024-03-01','2026-02-09')
+
+# %%
 
 for i in dates:
 

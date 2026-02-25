@@ -93,7 +93,7 @@ tb_cluster as (
         from tb_freq_valor
 )
 
-select date('{date}','-1 day') as dtRef,
+select date('2025-09-01','-1 day') as dtRef,
         t1.*,
         t2.frequencia,
         t2.valor,

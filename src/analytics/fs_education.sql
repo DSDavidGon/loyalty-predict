@@ -5,7 +5,7 @@ with tb_usuario_cursos as (
             count(descSlugCursoEpisodio) as qtdEps
 
     FROM cursos_episodios_completos
-    WHERE dtCriacao < '2026-02-09'
+    WHERE dtCriacao < '2025-10-01'
     GROUP BY idUsuario, descSlugCurso
 ),
 
@@ -78,7 +78,7 @@ tb_atividade as (
             max(dtRecompensa) as dtCriacao
 
         FROM recompensas_usuarios
-        WHERE dtRecompensa < '2026-02-09'
+        WHERE dtRecompensa < '2025-10-01'
         GROUP BY idUsuario
 
     UNION ALL
@@ -88,7 +88,7 @@ tb_atividade as (
             max(dtCriacao) as dtCriacao
 
         FROM habilidades_usuarios
-        WHERE dtCriacao < '2026-02-09'
+        WHERE dtCriacao < '2025-10-01'
         GROUP BY idUsuario
 
     UNION ALL
@@ -98,14 +98,14 @@ tb_atividade as (
             max(dtCriacao) as dtCriacao
 
         FROM cursos_episodios_completos
-        WHERE dtCriacao < '2026-02-09'
+        WHERE dtCriacao < '2025-10-01'
         group by idUsuario
 ),
 
 tb_ultima_atv as (
 
     SELECT idUsuario,
-            min(julianday('2026-02-09')-julianday(dtCriacao)) as diasUltAtv
+            min(julianday('2025-10-01')-julianday(dtCriacao)) as diasUltAtv
     FROM tb_atividade
     group by idUsuario
 ),
@@ -154,7 +154,7 @@ tb_ultima_atv as (
     on t1.idUsuario = t3.idUsuario
 )
 
-SELECT date('2026-02-09','-1 day') as dtRef,
+SELECT date('2025-10-01','-1 day') as dtRef,
         *
 
 FROM tb_join

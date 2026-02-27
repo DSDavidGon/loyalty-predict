@@ -1,3 +1,13 @@
-data/analytics/database.db
+# env
+.env
+kaggle.json
+.venv
+
+# data
+*.csv
 *.db
-data/analytics/
+
+# cache e artefatos
+mlartifacts
+mlruns
+__pycache__

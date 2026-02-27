@@ -10,4 +10,4 @@
 --order by dtRef, descLifeCycle
 --
 --
-drop table life_cycle
+.tables

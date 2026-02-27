@@ -2,7 +2,6 @@
 import argparse
 import datetime
 from tqdm import tqdm
-
 import pandas as pd
 import sqlalchemy
 
@@ -49,7 +48,7 @@ def exec_query(table, db_origin, db_target, dt_start, dt_stop, monthly, mode='ap
         df = pd.read_sql(query_format, engine_app)
         df.to_sql(table, engine_analytical, index=False, if_exists=mode)
 
-exec_query('life_cycle','loyalty-system','analytics','2024-03-01','2026-02-09',False,'append')
+exec_query('fs_transacional','loyalty-system','analytics','2024-03-01','2026-02-09',False,'append')
 
 # %%
 def main():

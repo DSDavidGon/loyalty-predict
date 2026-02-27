@@ -1,110 +1,106 @@
-/*
-Analise do Ciclo
-Curioso - Contas Recém criadas (Até 7 dias)
-Fiel - Fez transações nos ultimos 7 dias e a anterior foi em menos de 14 dias
-Turista - Fez transações entre 7 e 14 dias
-Desencantado - Fez transações entre 15 e 28 dias
-Zumbi - Ultima transação a mais de 28 dias
-Reconquistado - Fez transação nos ultimos 7 dias e a anterior foi entre 15 e 28 dias
-Reborn - Fez transações nos ultimos 7 dias e a anterior foi maior que 28 dias
-*/
+-- curioso -> idade < 7
+-- fiel -> recência < 7 e recência anterior < 15
+-- turista -> 7 <= recência <= 14
+-- desencantado -> 14 < recência <= 28
+-- zumbi -> recência > 28
+-- reconquistado -> recência < 7 e 14 <= recencia anterior <= 28
+-- reborn -> recência < 7 e recencia anterior > 28
 
---Tabela de Dias/Cliente
-with tb_daily as (
-    SELECT
-        DISTINCT idCliente,
-        substr(dtCriacao, 1,11) as dtDia
-    FROM transacoes
-    WHERE dtCriacao < '2025-09-01'
-
-),
-
--- Tabela de idade e recência 
-tb_idade as (
+WITH tb_daily AS (
     SELECT 
-        idCliente,
-        cast(max(julianday('2025-09-01')-julianday(dtDia)) as int) as idade, --Dias desde a primeira transação
-        cast(min(julianday('2025-09-01')-julianday(dtDia)) as int) as recencia --Dias desde a ultima transação
+        DISTINCT
+        IdCliente,
+        substr(DtCriacao,0,11) AS dtDia
 
-    from tb_daily
-    group by idCliente
+    FROM transacoes
+    WHERE DtCriacao < '{date}'
 ),
 
--- Tabela de ativações/idCliente
-tb_rn as (
-    select *,
-        row_number() OVER (PARTITION by idCliente order by dtDia DESC) as rnDia
-    from tb_daily
+tb_idade AS (
+    SELECT IdCliente,
+           cast(max(julianday('{date}') - julianday(dtDia)) as int) AS qtdeDiasPrimTransacao,
+           cast(min(julianday('{date}') - julianday(dtDia)) as int) AS qtdeDiasUltTransacao
+    FROM tb_daily
+    GROUP BY IdCliente
 ),
 
---Tabela de Penultima Ativacao
-tb_penul_atv as (
+tb_rn AS (
     SELECT *,
-        cast(julianday('2025-09-01')-julianday(dtDia) as int) as penultimaAtivacao
-
-    from tb_rn
-    where rnDia = 2
+            row_number() OVER (PARTITION BY IdCliente ORDER BY dtDia DESC) AS rnDia
+    FROM tb_daily
 ),
 
-tb_life_cycle as (
+tb_penultima_ativacao As (
+    SELECT *,
+           CAST(julianday('{date}') - julianday(dtDia) AS INT) AS qtdeDiasPenultimaTransacao
+    FROM tb_rn
+    WHERE rnDia = 2
+),
+
+tb_life_cycle AS (
+
     SELECT t1.*,
-        t2.penultimaAtivacao,
+        t2.qtdeDiasPenultimaTransacao,
         CASE
-            when idade <= 7 then 'curioso'
-            when recencia <= 7 and (penultimaAtivacao - recencia) <= 14 then 'fiel'
-            when recencia BETWEEN 8 and 14 then 'turista'
-            when recencia BETWEEN 15 and 28 then 'desencantado'
-            when recencia > 28 then 'zumbi'
-            when recencia <= 7 and (penultimaAtivacao - recencia) BETWEEN 15 and 27 then 'reconquistado'
-            when recencia <=7 and (penultimaAtivacao - recencia) > 27 then 'reborn'
-        
-        end as descLifeCycle    
+            WHEN qtdeDiasPrimTransacao <= 7 THEN '01-CURIOSO'
+            WHEN qtdeDiasUltTransacao <= 7 AND qtdeDiasPenultimaTransacao - qtdeDiasUltTransacao <= 14 THEN '02-FIEL'
+            WHEN qtdeDiasUltTransacao BETWEEN 8 AND 14 THEN '03-TURISTA'
+            WHEN qtdeDiasUltTransacao BETWEEN 15 AND 28 THEN '04-DESENCANTADA'
+            WHEN qtdeDiasUltTransacao > 28 THEN '05-ZUMBI'
+            WHEN qtdeDiasUltTransacao <= 7 AND qtdeDiasPenultimaTransacao - qtdeDiasUltTransacao BETWEEN 15 AND 27 THEN '02-RECONQUISTADO'
+            WHEN qtdeDiasUltTransacao <= 7 AND qtdeDiasPenultimaTransacao - qtdeDiasUltTransacao > 27 THEN '02-REBORN'
+        END AS descLifeCycle
 
-    from tb_idade as t1
-    left join tb_penul_atv as t2
-    on t1.idCliente = t2.idCliente
-    
+    FROM tb_idade AS t1
+
+    LEFT JOIN tb_penultima_ativacao AS t2
+    ON t1.idCliente = t2.idCliente
 ),
 
-tb_freq_valor as (
-        select idCliente,
-        count(DISTINCT substr(DtCriacao,0,11)) as frequencia,
-        sum(CASE WHEN QtdePontos > 0 then qtdePontos else 0 end) as valor
---Decisão de considerar apenas pontos positivos pq os pontos gastos já foram ganhos em algum periodo histórico anterior
-        from transacoes
-        where DtCriacao < '2025-09-01'
-        and DtCriacao >= date('2025-09-01','-28 days') 
-        group by idCliente
-        order by frequencia DESC
+tb_freq_valor AS (
+
+    SELECT IdCliente,
+        count(DISTINCT substr(DtCriacao,0,11)) AS qtdeFrequencia,
+        sum(CASE WHEN QtdePontos > 0 THEN QtdePontos  ELSE 0 END) as qtdePontosPos
+        -- sum(abs(QtdePontos)) as qtdePontosAbs
+
+    FROM transacoes
+
+    WHERE DtCriacao < '{date}'
+    AND DtCriacao >= date('{date}', '-28 days')
+
+    GROUP BY idCliente
+    ORDER BY qtdeFrequencia DESC
+
 ),
 
-tb_cluster as (
-        select *,
-                CASE
-                        WHEN frequencia <= 10 and valor >= 1500 then '12-hyper'
-                        WHEN frequencia > 10 and valor >= 1500 then '22-eficiente'
-                        WHEN frequencia <= 10 and valor >= 750 then '11-indeciso'
-                        WHEN frequencia > 10 and valor >= 750 then '21-esforçado'
-                        WHEN frequencia < 5 then '00-lucker'
-                        WHEN frequencia <= 10 then '01-preguiçoso'
-                        WHEN frequencia > 10 then '20-potencial'
-                end as cluster
+tb_cluster AS (
 
-        from tb_freq_valor
+    SELECT *,
+            CASE
+                WHEN qtdeFrequencia <= 10 AND qtdePontosPos >= 1500 THEN '12-HYPER'
+                WHEN qtdeFrequencia > 10 AND qtdePontosPos >= 1500 THEN '22-EFICIENTE'
+                WHEN qtdeFrequencia <= 10 AND qtdePontosPos >= 750 THEN '11-INDECISO'
+                WHEN qtdeFrequencia > 10 AND qtdePontosPos >= 750 THEN '21-ESFORÇADO'
+                WHEN qtdeFrequencia < 5 THEN '00-LURKER'
+                WHEN qtdeFrequencia <= 10 THEN '01-PREGUIÇOSO'
+                WHEN qtdeFrequencia > 10 THEN '20-POTENCIAL'
+            END AS cluster
+
+    FROM tb_freq_valor
+
 )
 
-select date('2025-09-01','-1 day') as dtRef,
-        t1.*,
-        t2.frequencia,
-        t2.valor,
-        t2.cluster
-from tb_life_cycle as t1
 
-left join tb_cluster as t2
-on t1.idCliente = t2.idCliente
+SELECT 
+       date('{date}', '-1 day') AS dtRef,
+       t1.*,
+       t2.qtdeFrequencia,
+       t2.qtdePontosPos,
+       t2.cluster 
 
+FROM tb_life_cycle AS t1
 
-
-
-
+LEFT JOIN tb_cluster AS t2
+ON t1.IdCliente = t2.IdCliente
 

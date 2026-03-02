@@ -7,14 +7,15 @@ import seaborn as sns
 from feature_engine import selection
 from feature_engine import imputation
 from feature_engine import encoding
-
+from sklearn import tree
+from sklearn import metrics
 
 # %%
 #SAMPLE - IMPORT DOS DADOS
 
 con = sqlalchemy.create_engine("sqlite:///../../data/analytics/database.db")
 
-df = pd.read_sql('abt_fiel',con)
+df = pd.read_sql('select * from abt_fiel',con)
 
 df.head()
 
@@ -137,7 +138,6 @@ to_remove = bivariada_num[bivariada_num['ratio']<1].index.tolist()
 
 drop_features = selection.DropFeatures(to_remove)
 
-X_train_transform=drop_features.fit_transform(X_train)
 missing_df = X_train_transform.isna().mean()
 
 # %%
@@ -153,20 +153,47 @@ imput_new = imputation.CategoricalImputer(
     fill_value='Nao-Usuario',
     variables=['descLifeCycleD28'])
 
-
-
-X_train_transform = imput_0.fit_transform(X_train_transform)
-X_train_transform = imput_new.fit_transform(X_train_transform)
-
 X_train_transform
-# %%
-missing_df = X_train_transform.isna().mean()
-missing_df[missing_df>0]
-
 # %%
 #MODIFY - ONEHOT
 
 onehot = encoding.OneHotEncoder(variables=cat_features)
 
+# %% 
+#MODIFY - Aplicando transformações do Dataset
+
+X_train_transform=drop_features.fit_transform(X_train)
+X_train_transform = imput_0.fit_transform(X_train_transform)
+X_train_transform = imput_new.fit_transform(X_train_transform)
 X_train_transform=onehot.fit_transform(X_train_transform)
-X_train_transform
+
+# %%
+X_train_transform.head()
+
+# %%
+# MODEL - Árvore de Decisão
+
+model = tree.DecisionTreeClassifier(random_state=42)
+
+model.fit(X_train_transform, y_train)
+
+# %%
+
+# ASSESS
+y_pred_train = model.predict(X_train_transform)
+
+acc_train = metrics.accuracy_score(y_train, y_pred_train)
+print("Acurácia Treino",acc_train)
+
+
+# %%
+
+X_test_transform=drop_features.transform(X_test)
+X_test_transform = imput_0.transform(X_test_transform)
+X_test_transform = imput_new.transform(X_test_transform)
+X_test_transform=onehot.transform(X_test_transform)
+y_pred_test = model.predict(X_test_transform)
+
+acc_test = metrics.accuracy_score(y_test, y_pred_test)
+print("Acurácia Treino",acc_test)
+

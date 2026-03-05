@@ -173,7 +173,7 @@ X_train_transform.head()
 # %%
 # MODEL - Árvore de Decisão
 
-model = tree.DecisionTreeClassifier(random_state=42)
+model = tree.DecisionTreeClassifier(random_state=42, min_samples_leaf=50)
 
 model.fit(X_train_transform, y_train)
 
@@ -181,19 +181,32 @@ model.fit(X_train_transform, y_train)
 
 # ASSESS
 y_pred_train = model.predict(X_train_transform)
+y_proba_train = model.predict_proba(X_train_transform)
 
 acc_train = metrics.accuracy_score(y_train, y_pred_train)
-print("Acurácia Treino",acc_train)
+auc_train = metrics.roc_auc_score(y_test,y_proba_train[:,1])
+
+print("Acurácia Treino:",acc_train)
+print("AUC Treino:",auc_test)
 
 
 # %%
-
+# Acurácia e Curva ROC
 X_test_transform=drop_features.transform(X_test)
 X_test_transform = imput_0.transform(X_test_transform)
 X_test_transform = imput_new.transform(X_test_transform)
 X_test_transform=onehot.transform(X_test_transform)
+
 y_pred_test = model.predict(X_test_transform)
+y_proba_test = model.predict_proba(X_test_transform)
 
 acc_test = metrics.accuracy_score(y_test, y_pred_test)
-print("Acurácia Treino",acc_test)
+auc_test = metrics.roc_auc_score(y_test,y_proba_test[:,1])
+
+print("Acurácia Teste:",acc_test)
+print("AUC Teste:",auc_test)
+
+# %%
+y_train.mean()
+
 
